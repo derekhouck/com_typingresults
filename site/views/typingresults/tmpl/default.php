@@ -25,39 +25,75 @@ $doc->addScript('media/com_typingresults/js/d3.layout.cloud.js');
 			<h3>Age Range</h3>
 			<div id="ageMinContainer">
 				<h4>As Young As</h4>
-				<?php print_r $this->ageMin; ?>
-				<svg id="chart_ageMin" class="chart_bar"></svg>
 			</div>
 			<div id="ageMaxContainer">
 				<h4>As Old As</h4>
-				<svg id="chart_ageMax" class="chart_bar"></svg>
 			</div>
 		</div>
-		<div id="chart_orientation" class="chart">
+		<div id="orientationContainer" class="chart">
 			<h3>Orientation</h3>
 		</div>
-		<div id="chart_lookLike" class="chart">
+		<div id="lookLikeContainer" class="chart">
 			<h3>Do they look like this headshot?</h3>
 		</div>
-		<div id="chart_ethnicity" class="chart">
+		<div id="ethnicityContainer" class="chart">
 			<h3>Ethnicity</h3>
 		</div>
-		<div id="chart_occupation" class="chart">
+		<div id="occupationContainer" class="chart">
 			<h3>Occupation</h3>
 		</div>
-		<div id="chart_personality" class="chart">
+		<div id="personalityContainer" class="chart">
 			<h3>Personality</h3>
 		</div>
-		<div id="chart_archetype" class="chart">
+		<div id="archetypeContainer" class="chart">
 			<h3>Archetype</h3>
 		</div>
 	</div>
 </article>
 <script type="text/javascript">
+	// Variables
+  	var ageMinRows = <?php echo $this->ageMin; ?>,
+  		ageMaxRows = <?php echo $this->ageMax; ?>,
+  		archetypeData = <?php echo $this->archetype ?>,
+  		colorRange = ['#c1272d', '#811A1E', '#400D0F', '#D66F73'],
+  		ethnicityData = <?php echo $this->ethnicity ?>,
+  		lookLikeRows = <?php echo $this->lookLikeHeadshot; ?>,
+  		occupationData = <?php echo $this->occupation ?>,
+  		orientationRows = <?php echo $this->orientation; ?>,
+  		personalityData = <?php echo $this->personality ?>;
+	
+	// If no data
+  	(function($) {
+  		// If no bar chart data
+  		function isBarData(variable, container, chart) {
+		  if (variable.length < 2) {
+			$(container).append("<p>There's not enough data to show this.</p>");
+		  } else {
+			$(container).append('<svg id=' + chart + ' class="chart_bar"></svg>');
+		  }
+	  	}
+	  	
+	  	//If no pie chart or word cloud data
+  		function isOtherData(variable, container, chart) {
+		  if (variable.length < 2) {
+			$(container).append("<p>There's not enough data to show this.</p>");
+		  } else {
+			$(container).append('<div id=' + chart + '></div>');
+		  }
+	  	}
+	  	
+	  	//Call functions
+	  	isBarData(ageMinRows, "#ageMinContainer", "chart_ageMin");
+	  	isBarData(ageMaxRows, "#ageMaxContainer", "chart_ageMax");
+	  	isOtherData(orientationRows, "#orientationContainer", "chart_orientation");
+	  	isOtherData(lookLikeRows, "#lookLikeContainer", "chart_lookLike");
+	  	isOtherData(ethnicityData, "#ethnicityContainer", "chart_ethnicity");
+	  	isOtherData(occupationData, "#occupationContainer", "chart_occupation");
+	  	isOtherData(personalityData, "#personalityContainer", "chart_personality");	  
+	  	isOtherData(archetypeData, "#archetypeContainer", "chart_archetype");	 	
+  	}) (jQuery);
+	
 	// Pie charts
-	var colorRange = ['#c1272d', '#811A1E', '#400D0F', '#D66F73'];
-	var orientationRows = <?php echo $this->orientation; ?>;
- 	var lookLikeRows = <?php echo $this->lookLikeHeadshot; ?>;
 	var oreintationPie = new d3pie("chart_orientation", {
 		"size": {
 			"canvasHeight": 250,
@@ -142,11 +178,8 @@ $doc->addScript('media/com_typingresults/js/d3.layout.cloud.js');
 			}
 		}
 	});
-</script>
-<script type="text/javascript">
+	
 	//Bar charts
-	  var ageMinRows = <?php echo $this->ageMin; ?>;
-	  var ageMaxRows = <?php echo $this->ageMax; ?>;
       function barChart (fieldname, chartContainer) {
       	this.data = fieldname;
       	this.chart = chartContainer;
@@ -194,13 +227,8 @@ $doc->addScript('media/com_typingresults/js/d3.layout.cloud.js');
       }
       var ageMinChart = new barChart(ageMinRows, "#chart_ageMin");
       var ageMaxChart = new barChart(ageMaxRows, "#chart_ageMax");
-</script>
-<script type="text/javascript">
+      
 	// Word Clouds
-	var ethnicityData = <?php echo $this->ethnicity ?>;
-	var occupationData = <?php echo $this->occupation ?>;
-	var personalityData = <?php echo $this->personality ?>;
-	var archetypeData = <?php echo $this->archetype ?>;
 	function wordCloud(data, chartContainer) {
 		this.data = data;
 		this.chartContainer = chartContainer;

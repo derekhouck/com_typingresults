@@ -76,7 +76,7 @@ class TypingResultsModelTypingResults extends JModelItem
 		$query
 			->select(array($field, 'COUNT(*)'))
 			->from($db->quoteName('headshot_typing'))
-			->where($db->quoteName('headshot')." = ".$db->quote($currentHeadshot)." AND ".$db->quoteName($field)." IS NOT NULL" )
+			->where($db->quoteName('headshot')." = ".$db->quote($currentHeadshot)." AND ".$db->quoteName($field)." IS NOT NULL AND ".$db->quoteName($field)." NOT LIKE '0'")
 			->group($db->quoteName($field));
 		$db->setQuery($query);
 		$rows = $db->loadRowList();
@@ -131,7 +131,7 @@ class TypingResultsModelTypingResults extends JModelItem
 		$query
 			->select(array($field))
 			->from($db->quoteName('headshot_typing'))
-			->where($db->quoteName('headshot')." = ".$db->quote($currentHeadshot)." AND ".$db->quoteName($field)." != ' '");
+			->where($db->quoteName('headshot')." = ".$db->quote($currentHeadshot)." AND ".$db->quoteName($field)." NOT LIKE '[\"\"]' AND ".$db->quoteName($field)." IS NOT NULL AND ".$db->quoteName($field)." != '' AND ".$db->quoteName($field)." != ' '");
 		$db->setQuery($query);
 		$column = $db->loadColumn();
 		$columnData = implode(",", $column);
